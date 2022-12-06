@@ -1,5 +1,4 @@
 import {
-  Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
@@ -7,7 +6,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class OrderEntity {
+export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 

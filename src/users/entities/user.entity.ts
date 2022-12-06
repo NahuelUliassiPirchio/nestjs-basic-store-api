@@ -2,7 +2,7 @@ import { UserRole } from 'src/common/roles.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class ProductEntity {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -14,6 +14,9 @@ export class ProductEntity {
 
   @Column({ type: 'int' })
   stock: string;
+
+  @Column({ type: 'varchar' })
+  address: string;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.CUSTOMER })
   role: UserRole;
