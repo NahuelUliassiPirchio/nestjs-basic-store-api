@@ -17,6 +17,10 @@ export class UsersService {
 
   create(data: CreateUserDto) {
     const newUser = this.userRepository.create(data);
+    if (!data.avatar) {
+      const userName = newUser.name.replace(' ', '+');
+      newUser.avatar = `ui-avatars.com/api/?name=${userName}`;
+    }
     return this.userRepository.save(newUser);
   }
 }

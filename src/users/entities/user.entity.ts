@@ -12,9 +12,6 @@ export class User {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'int' })
-  stock: string;
-
   @Column({ type: 'varchar' })
   address: string;
 

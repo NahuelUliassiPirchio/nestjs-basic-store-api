@@ -1,5 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 import { UserRole } from 'src/common/roles.enum';
 
 export class CreateUserDto {
@@ -13,6 +19,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
+  @IsEnum(UserRole)
   readonly role: UserRole;
 
   @IsNotEmpty()
