@@ -7,4 +7,4 @@ export class CreateOrderDto {
   readonly: string;
 }
 
-export class UpdateUserDto extends PartialType(CreateOrderDto) {}
+export class UpdateOrderDto extends PartialType(CreateOrderDto) {}
