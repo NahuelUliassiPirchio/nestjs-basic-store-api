@@ -14,5 +14,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   controllers: [ProductsController, CategoriesController, BrandsController],
   providers: [ProductsService, CategoriesService, BrandsService],
   imports: [TypeOrmModule.forFeature([Product, Brand, Category])],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

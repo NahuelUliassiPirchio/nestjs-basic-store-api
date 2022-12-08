@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsPositive,
   IsString,
+  IsUrl,
   Min,
 } from 'class-validator';
 
@@ -30,7 +31,16 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsArray()
+  @IsUrl()
   readonly images: string[];
+
+  @IsNotEmpty()
+  @IsArray()
+  readonly categoriesIds: number[];
+
+  @IsNotEmpty()
+  @IsPositive()
+  readonly brandId: number;
 }
 
 export class UpdateCategoryDto extends PartialType(CreateProductDto) {}

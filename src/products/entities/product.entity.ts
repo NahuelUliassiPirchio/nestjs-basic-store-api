@@ -1,4 +1,15 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Bid } from '../../users/entities/bid.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Category } from './category.entity';
+import { Brand } from './brand.entity';
 
 @Entity()
 export class Product {
@@ -16,4 +27,24 @@ export class Product {
 
   @Column({ type: 'int' })
   price: string;
+
+  @OneToOne(() => Bid, (bid) => bid.product, {
+    nullable: true,
+  })
+  bid: Bid;
+
+  @ManyToMany(() => Category, (category) => category.products)
+  @JoinTable({
+    name: 'products_categories',
+    joinColumn: {
+      name: 'product_id',
+    },
+    inverseJoinColumn: {
+      name: 'category_id',
+    },
+  })
+  categories: Category[];
+
+  @ManyToOne(() => Brand, (brand) => brand.products)
+  brand: Brand;
 }
