@@ -1,5 +1,12 @@
 import { Product } from '../../products/entities/product.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { BidItem } from './bidItem.entity';
 
 @Entity()
 export class Bid {
@@ -12,7 +19,8 @@ export class Bid {
   @Column({ type: 'time with time zone', name: 'end_date' })
   endDate: Date;
 
-  // TODO: bidders (one to many relation) array de tipo de objetos con user, tiempo y plata [nueva entidad]
+  @OneToMany(() => BidItem, (biditem) => biditem.bid)
+  bidders: BidItem[];
 
   @OneToOne(() => Product, (product) => product.bid)
   product: Product;

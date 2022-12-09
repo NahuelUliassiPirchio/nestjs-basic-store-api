@@ -1,21 +1,20 @@
-import { Product } from '../../products/entities/product.entity';
+import { Bid } from './bid.entity';
 import {
+  Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
-import { OrderItem } from './orderItem.entity';
 
 @Entity()
-export class Order {
+export class BidItem {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: 'int', name: 'bid_amount' })
+  bidAmount: number;
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -31,9 +30,6 @@ export class Order {
   })
   updatedAt: Date;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
-  orderItems: OrderItem[];
-
-  @ManyToOne(() => User, (user) => user.orders)
-  user: User[];
+  @ManyToOne(() => Bid, (bid) => bid.bidders)
+  bid: Bid;
 }
