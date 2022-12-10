@@ -22,11 +22,14 @@ export class Product {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'int' })
-  stock: string;
+  @Column({ type: 'varchar' })
+  image: string;
 
   @Column({ type: 'int' })
-  price: string;
+  stock: number;
+
+  @Column({ type: 'int' })
+  price: number;
 
   @OneToOne(() => Bid, (bid) => bid.product, {
     nullable: true,

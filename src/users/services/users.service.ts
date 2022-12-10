@@ -8,19 +8,19 @@ import { User } from '../entities/user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private usersRepository: Repository<User>,
   ) {}
 
   getAll() {
-    return this.userRepository.find();
+    return this.usersRepository.find();
   }
 
   create(data: CreateUserDto) {
-    const newUser = this.userRepository.create(data);
+    const newUser = this.usersRepository.create(data);
     if (!data.avatar) {
       const userName = newUser.name.replace(' ', '+');
       newUser.avatar = `ui-avatars.com/api/?name=${userName}`;
     }
-    return this.userRepository.save(newUser);
+    return this.usersRepository.save(newUser);
   }
 }

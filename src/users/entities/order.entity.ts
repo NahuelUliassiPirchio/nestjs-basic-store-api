@@ -1,9 +1,6 @@
-import { Product } from '../../products/entities/product.entity';
 import {
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,

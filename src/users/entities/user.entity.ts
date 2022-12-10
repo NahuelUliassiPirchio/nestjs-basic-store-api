@@ -1,4 +1,4 @@
-import { UserRole } from '../../../src/common/roles.enum';
+import { UserRole } from '../../common/roles.enum';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from './order.entity';
 
@@ -25,6 +25,8 @@ export class User {
   @Column({ type: 'varchar', length: 255, name: 'phone_number' })
   phoneNumber: string;
 
-  @OneToMany(() => Order, (order) => order.user)
+  @OneToMany(() => Order, (order) => order.user, {
+    nullable: true,
+  })
   orders: Order[];
 }

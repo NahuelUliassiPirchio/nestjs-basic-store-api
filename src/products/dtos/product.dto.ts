@@ -30,9 +30,8 @@ export class CreateProductDto {
   readonly price: number;
 
   @IsNotEmpty()
-  @IsArray()
   @IsUrl()
-  readonly images: string[];
+  readonly image: string;
 
   @IsNotEmpty()
   @IsArray()
@@ -43,4 +42,4 @@ export class CreateProductDto {
   readonly brandId: number;
 }
 
-export class UpdateCategoryDto extends PartialType(CreateProductDto) {}
+export class UpdateProductDto extends PartialType(CreateProductDto) {}
