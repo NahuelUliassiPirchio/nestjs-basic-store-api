@@ -15,7 +15,7 @@ export class BidsService {
     return this.bidsRepository.find();
   }
 
-  getOne(id: number) {
+  getById(id: number) {
     const bid = this.bidsRepository.findOneBy({ id });
     if (!bid) throw new NotFoundException();
     return bid;
@@ -27,13 +27,13 @@ export class BidsService {
   }
 
   async updateBid(id: number, changes: UpdateBidDto) {
-    const bid = await this.getOne(id);
+    const bid = await this.getById(id);
     this.bidsRepository.merge(bid, changes);
     return this.bidsRepository.save(bid);
   }
 
   async deleteBid(id: number) {
-    await this.getOne(id);
+    await this.getById(id);
     return this.bidsRepository.delete(id);
   }
 }

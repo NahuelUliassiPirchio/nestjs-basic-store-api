@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateOrderItemDto, UpdateOrderItemDto } from '../dtos/orderItem.dto';
 import { OrderItem } from '../entities/orderItem.entity';
+import { OrdersService } from './orders.service';
 
 @Injectable()
 export class OrderItemsService {
   constructor(
     @InjectRepository(OrderItem)
     private orderItemsRepository: Repository<OrderItem>,
+    private ordersService: OrdersService,
   ) {}
 
   getAll() {
@@ -17,6 +19,21 @@ export class OrderItemsService {
 
   async getById(id: number) {
     const orderItem = await this.orderItemsRepository.findOneBy({ id });
+    if (!orderItem) throw new NotFoundException();
+    return orderItem;
+  }
+
+  async getAllFromOrder(orderId: number) {
+    const order = await this.ordersService.getById(orderId);
+    return order.orderItems;
+  }
+
+  async getByIdFromOrder(orderId: number, orderItemId: number) {
+    const order = await this.ordersService.getById(orderId);
+    const orderItem = await this.orderItemsRepository.findBy({
+      order,
+      id: orderItemId,
+    });
     if (!orderItem) throw new NotFoundException();
     return orderItem;
   }
