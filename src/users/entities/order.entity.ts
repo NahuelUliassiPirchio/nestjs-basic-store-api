@@ -28,9 +28,11 @@ export class Order {
   })
   updatedAt: Date;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
+    nullable: true,
+  })
   orderItems: OrderItem[];
 
   @ManyToOne(() => User, (user) => user.orders)
-  user: User[];
+  user: User;
 }
