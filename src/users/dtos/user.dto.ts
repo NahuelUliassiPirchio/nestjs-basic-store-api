@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  MinLength,
 } from 'class-validator';
 import { UserRole } from 'src/common/roles.enum';
 
@@ -12,6 +13,11 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   readonly name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(6)
+  readonly password: string;
 
   @IsNotEmpty()
   @IsString()

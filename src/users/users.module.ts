@@ -12,18 +12,31 @@ import { BidItem } from './entities/bidItem.entity';
 import { OrderItem } from './entities/orderItem.entity';
 import { BidsController } from './controllers/bids.controller';
 import { OrderItemsController } from './controllers/orderItems.controller';
+import { BidsService } from './services/bids.service';
+import { BidItemsService } from './services/bidItems.service';
+import { OrderItemsService } from './services/orderItems.service';
+import { BidItemsController } from './controllers/bidItems.controller';
+import { OrdersController } from './controllers/orders.controller';
 
 @Module({
   providers: [
     UsersService,
     OrdersService,
-    BidsController,
-    OrderItemsController,
+    OrderItemsService,
+    BidsService,
+    BidItemsService,
   ],
-  controllers: [UsersController],
+  controllers: [
+    UsersController,
+    BidsController,
+    BidItemsController,
+    OrderItemsController,
+    OrdersController,
+  ],
   imports: [
     TypeOrmModule.forFeature([User, Order, OrderItem, Bid, BidItem]),
     ProductsModule,
   ],
+  exports: [UsersService],
 })
 export class UsersModule {}

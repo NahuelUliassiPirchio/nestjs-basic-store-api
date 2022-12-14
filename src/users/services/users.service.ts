@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { hash } from 'src/common/encryption.common';
 import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { User } from '../entities/user.entity';
@@ -21,18 +22,25 @@ export class UsersService {
     return user;
   }
 
-  addUser(data: CreateUserDto) {
+  async getByEmail(email: string) {
+    return this.usersRepository.findOneBy({ email });
+  }
+
+  async addUser(data: CreateUserDto) {
     const newUser = this.usersRepository.create(data);
     if (!data.avatar) {
       const userName = newUser.name.replace(' ', '+');
       newUser.avatar = `ui-avatars.com/api/?name=${userName}`;
     }
+    newUser.password = await hash(data.password);
+
     return this.usersRepository.save(newUser);
   }
 
   async updateUser(id: number, changes: UpdateUserDto) {
     const user = await this.getById(id);
     this.usersRepository.merge(user, changes);
+    if (changes.password) user.password = await hash(changes.password);
     return this.usersRepository.save(user);
   }
 

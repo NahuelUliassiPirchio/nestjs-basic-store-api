@@ -22,7 +22,7 @@ export class BidsController {
 
   @Get(':id')
   getOne(@Param('id', ParseIntPipe) id: number) {
-    return this.bidsService.getOne(id);
+    return this.bidsService.getById(id);
   }
 
   @Post()

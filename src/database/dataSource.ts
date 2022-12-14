@@ -8,7 +8,7 @@ export const connectionSource = new DataSource({
   password: 'admin',
   database: 'test',
   logging: true,
-  synchronize: false,
+  synchronize: true,
   entities: ['src/**/*.entity.ts'],
   migrations: ['src/database/migrations/*.ts'],
 });
