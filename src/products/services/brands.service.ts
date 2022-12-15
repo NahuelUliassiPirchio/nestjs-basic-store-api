@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dto';
@@ -15,25 +19,31 @@ export class BrandsService {
     return this.brandsRepository.find();
   }
 
-  async getOne(id: number) {
+  async getById(id: number) {
     const brand = await this.brandsRepository.findOneBy({ id });
     if (!brand) throw new NotFoundException();
     return brand;
   }
 
-  addBrand(data: CreateBrandDto) {
+  async addBrand(data: CreateBrandDto) {
     const newBrand = this.brandsRepository.create(data);
-    return this.brandsRepository.save(newBrand);
+
+    try {
+      return await this.brandsRepository.save(newBrand);
+    } catch (error) {
+      if (error?.code == 23505) throw new ConflictException();
+      else throw error;
+    }
   }
 
   async updateBrand(id: number, changes: UpdateBrandDto) {
-    const brand = await this.getOne(id);
+    const brand = await this.getById(id);
     this.brandsRepository.merge(brand, changes);
     return this.brandsRepository.save(brand);
   }
 
   async deleteBrand(id: number) {
-    const brand = await this.getOne(id);
+    const brand = await this.getById(id);
     return this.brandsRepository.delete(brand);
   }
 }

@@ -21,13 +21,13 @@ export class BidsController {
   }
 
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number) {
+  getById(@Param('id', ParseIntPipe) id: number) {
     return this.bidsService.getById(id);
   }
 
   @Post()
-  addBid(@Body() bid: CreateBidDto) {
-    return this.bidsService.addBid(bid);
+  addBid(@Body() bidData: CreateBidDto) {
+    return this.bidsService.addBid(bidData);
   }
 
   @Put(':id')
@@ -41,5 +41,21 @@ export class BidsController {
   @Delete(':id')
   deleteBid(@Param('id', ParseIntPipe) id: number) {
     return this.bidsService.deleteBid(id);
+  }
+
+  @Put(':id/items/:bid_item_id')
+  addBidItemToBid(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('bid_item_id', ParseIntPipe) bidItemId: number,
+  ) {
+    return this.bidsService.addItemToBid(id, bidItemId);
+  }
+
+  @Delete(':id/items/:bid_item_id')
+  deleteBidItemFromBid(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('bid_item_id', ParseIntPipe) bidItemId: number,
+  ) {
+    return this.bidsService.deleteItemFromBid(id, bidItemId);
   }
 }

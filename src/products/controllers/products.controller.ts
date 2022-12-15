@@ -21,7 +21,7 @@ export class ProductsController {
 
   @Get(':id')
   getById(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.getOne(id);
+    return this.productsService.getById(id);
   }
 
   @Post()
@@ -40,5 +40,21 @@ export class ProductsController {
   @Delete(':id')
   deleteProduct(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.deleteProduct(id);
+  }
+
+  @Put(':id/categories/:category_id')
+  addCategoryToProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('category_id', ParseIntPipe) categoryId: number,
+  ) {
+    return this.productsService.addCategoryToProduct(id, categoryId);
+  }
+
+  @Delete(':id/categories/:category_id')
+  deleteCategoryFromProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('category_id', ParseIntPipe) categoryId: number,
+  ) {
+    return this.productsService.deleteCategoryFromProduct(id, categoryId);
   }
 }

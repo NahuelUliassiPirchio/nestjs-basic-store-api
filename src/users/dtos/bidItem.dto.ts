@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsPositive } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
 
 export class CreateBidItemDto {
   @IsNotEmpty()
@@ -6,6 +6,10 @@ export class CreateBidItemDto {
   readonly bidAmount: number;
 
   @IsNotEmpty()
+  @IsPositive()
+  readonly userId: number;
+
+  @IsOptional()
   @IsPositive()
   readonly bidId: number;
 }

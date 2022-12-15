@@ -5,16 +5,17 @@ import {
   IsNotEmpty,
   IsOptional,
   IsPositive,
+  IsString,
 } from 'class-validator';
 
 export class CreateBidDto {
   @IsNotEmpty()
-  @IsDate()
-  readonly initialDate: Date;
+  @IsString()
+  readonly initialDate: string;
 
   @IsNotEmpty()
-  @IsDate()
-  readonly endDate: Date;
+  @IsString()
+  readonly endDate: string;
 
   @IsNotEmpty()
   @IsPositive()

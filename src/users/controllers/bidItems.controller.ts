@@ -1,19 +1,38 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { CreateBidItemDto, UpdateBidItemDto } from '../dtos/bidItem.dto';
 import { BidItemsService } from '../services/bidItems.service';
 
-@Controller(':bid_id/bid-items')
+@Controller('bid-items')
 export class BidItemsController {
   constructor(private bidItemsService: BidItemsService) {}
   @Get()
-  getAll(@Param('bid_id', ParseIntPipe) bidId: number) {
-    return this.bidItemsService.getAllFromBid(bidId);
+  getAll() {
+    return this.bidItemsService.getAll();
   }
 
-  @Get(':bid-item_id')
-  getBidItem(
-    @Param('bid-item_id') bidItemId: number,
-    @Param('bid_id', ParseIntPipe) bidId: number,
+  @Get(':id')
+  getBidItem(@Param('id', ParseIntPipe) id: number) {
+    return this.bidItemsService.getById(id);
+  }
+
+  @Post()
+  addBidItem(@Body() bidItemData: CreateBidItemDto) {
+    return this.bidItemsService.addBidItem(bidItemData);
+  }
+
+  @Put(':id')
+  updateBidItem(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateBidItemData: UpdateBidItemDto,
   ) {
-    return this.bidItemsService.getByIdFromBid(bidId, bidItemId);
+    return this.bidItemsService.updateBidItem(id, updateBidItemData);
   }
 }

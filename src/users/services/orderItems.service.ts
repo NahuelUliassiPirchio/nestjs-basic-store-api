@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateOrderItemDto, UpdateOrderItemDto } from '../dtos/orderItem.dto';
@@ -14,11 +18,14 @@ export class OrderItemsService {
   ) {}
 
   getAll() {
-    return this.orderItemsRepository.find();
+    return this.orderItemsRepository.find({ relations: { order: true } });
   }
 
   async getById(id: number) {
-    const orderItem = await this.orderItemsRepository.findOneBy({ id });
+    const orderItem = await this.orderItemsRepository.findOne({
+      where: { id },
+      relations: { order: true },
+    });
     if (!orderItem) throw new NotFoundException();
     return orderItem;
   }
@@ -40,7 +47,13 @@ export class OrderItemsService {
 
   async addOrderItem(data: CreateOrderItemDto) {
     const newOrderItem = this.orderItemsRepository.create(data);
-    return this.orderItemsRepository.save(newOrderItem);
+
+    try {
+      return await this.orderItemsRepository.save(newOrderItem);
+    } catch (error) {
+      if (error?.code == 23505) throw new ConflictException();
+      else throw error;
+    }
   }
 
   async updateOrderItem(id: number, changes: UpdateOrderItemDto) {

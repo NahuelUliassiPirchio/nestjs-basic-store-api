@@ -13,11 +13,11 @@ export class Bid {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'time with time zone', name: 'initial_date' })
-  initialDate: Date;
+  @Column({ type: 'varchar', name: 'initial_date' })
+  initialDate: string;
 
-  @Column({ type: 'time with time zone', name: 'end_date' })
-  endDate: Date;
+  @Column({ type: 'varchar', name: 'end_date' })
+  endDate: string;
 
   @OneToMany(() => BidItem, (biditem) => biditem.bid)
   bidders: BidItem[];

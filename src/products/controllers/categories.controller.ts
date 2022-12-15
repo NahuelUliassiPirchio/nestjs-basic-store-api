@@ -27,7 +27,7 @@ export class CategoriesController {
   @Public()
   @Get(':id')
   getById(@Param('id', ParseIntPipe) id: number) {
-    return this.categoriesService.getOne(id);
+    return this.categoriesService.getById(id);
   }
 
   @Post()

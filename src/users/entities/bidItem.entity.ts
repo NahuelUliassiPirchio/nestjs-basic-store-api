@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity()
 export class BidItem {
@@ -32,4 +33,7 @@ export class BidItem {
 
   @ManyToOne(() => Bid, (bid) => bid.bidders)
   bid: Bid;
+
+  @ManyToOne(() => User, (user) => user.bids)
+  user: User;
 }

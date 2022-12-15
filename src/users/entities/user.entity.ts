@@ -2,6 +2,7 @@ import { UserRole } from '../../common/roles.enum';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from './order.entity';
 import { Exclude } from 'class-transformer';
+import { BidItem } from './bidItem.entity';
 
 @Entity()
 export class User {
@@ -34,4 +35,7 @@ export class User {
     nullable: true,
   })
   orders: Order[];
+
+  @OneToMany(() => BidItem, (bid) => bid.user)
+  bids: BidItem[];
 }
