@@ -25,10 +25,10 @@ export class CreateUserDto {
   @IsString()
   readonly email: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @IsEnum(UserRole)
-  readonly role: UserRole;
+  // @IsNotEmpty()
+  // @IsString()
+  // @IsEnum(UserRole)
+  // readonly role: UserRole;
 
   @IsNotEmpty()
   @IsString()

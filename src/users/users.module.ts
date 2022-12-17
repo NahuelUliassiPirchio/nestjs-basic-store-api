@@ -17,6 +17,8 @@ import { BidItemsService } from './services/bidItems.service';
 import { OrderItemsService } from './services/orderItems.service';
 import { BidItemsController } from './controllers/bidItems.controller';
 import { OrdersController } from './controllers/orders.controller';
+import { ProfileController } from './controllers/profile.controller';
+import { ProfileService } from './services/profile.service';
 
 @Module({
   providers: [
@@ -25,6 +27,7 @@ import { OrdersController } from './controllers/orders.controller';
     OrderItemsService,
     BidsService,
     BidItemsService,
+    ProfileService,
   ],
   controllers: [
     UsersController,
@@ -32,6 +35,7 @@ import { OrdersController } from './controllers/orders.controller';
     BidItemsController,
     OrderItemsController,
     OrdersController,
+    ProfileController,
   ],
   imports: [
     TypeOrmModule.forFeature([User, Order, OrderItem, Bid, BidItem]),

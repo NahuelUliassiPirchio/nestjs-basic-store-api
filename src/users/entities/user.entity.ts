@@ -1,5 +1,12 @@
 import { UserRole } from '../../common/roles.enum';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Order } from './order.entity';
 import { Exclude } from 'class-transformer';
 import { BidItem } from './bidItem.entity';
@@ -30,6 +37,20 @@ export class User {
 
   @Column({ type: 'varchar', length: 255, name: 'phone_number' })
   phoneNumber: string;
+
+  @CreateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    name: 'created_at',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    name: 'updated_at',
+  })
+  updatedAt: Date;
 
   @OneToMany(() => Order, (order) => order.user, {
     nullable: true,
