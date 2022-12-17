@@ -7,11 +7,16 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dto';
+import {
+  CreateCategoryDto,
+  FilterCategoryDto,
+  UpdateCategoryDto,
+} from '../dtos/category.dto';
 import { CategoriesService } from '../services/categories.service';
 
 @UseGuards(JwtAuthGuard)
@@ -20,8 +25,8 @@ export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
   @Public()
   @Get()
-  getAll() {
-    return this.categoriesService.getAll();
+  getAll(@Query() params: FilterCategoryDto) {
+    return this.categoriesService.getAll(params);
   }
 
   @Public()

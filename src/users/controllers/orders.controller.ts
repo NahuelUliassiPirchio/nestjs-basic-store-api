@@ -7,16 +7,21 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { CreateOrderDto, UpdateOrderDto } from '../dtos/order.dto';
+import {
+  CreateOrderDto,
+  FilterOrderDto,
+  UpdateOrderDto,
+} from '../dtos/order.dto';
 import { OrdersService } from '../services/orders.service';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
   @Get()
-  getAll() {
-    return this.ordersService.getAll();
+  getAll(@Query() params: FilterOrderDto) {
+    return this.ordersService.getAll(params);
   }
 
   @Get(':id')

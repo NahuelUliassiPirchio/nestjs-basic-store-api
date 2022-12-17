@@ -5,7 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dto';
+import {
+  CreateCategoryDto,
+  FilterCategoryDto,
+  UpdateCategoryDto,
+} from '../dtos/category.dto';
 import { Category } from '../entities/category.entity';
 
 @Injectable()
@@ -15,8 +19,11 @@ export class CategoriesService {
     private categoriesRepository: Repository<Category>,
   ) {}
 
-  getAll() {
-    return this.categoriesRepository.find();
+  getAll(params?: FilterCategoryDto) {
+    return this.categoriesRepository.find({
+      take: params.limit,
+      skip: params.offset,
+    });
   }
 
   getByIds(ids: number[]) {

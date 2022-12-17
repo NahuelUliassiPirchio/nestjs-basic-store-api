@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  Min,
 } from 'class-validator';
 
 export class CreateBidDto {
@@ -27,3 +28,13 @@ export class CreateBidDto {
 }
 
 export class UpdateBidDto extends PartialType(CreateBidDto) {}
+
+export class FilterBidDto {
+  @IsOptional()
+  @IsPositive()
+  readonly limit: number;
+
+  @IsOptional()
+  @Min(0)
+  readonly offset: number;
+}

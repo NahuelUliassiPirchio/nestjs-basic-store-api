@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateBidDto, UpdateBidDto } from '../dtos/bid.dto';
+import { CreateBidDto, FilterBidDto, UpdateBidDto } from '../dtos/bid.dto';
 import { Bid } from '../entities/bid.entity';
 import { BidItemsService } from './bidItems.service';
 
@@ -20,12 +20,14 @@ export class BidsService {
     private bidItemsService: BidItemsService,
   ) {}
 
-  getAll() {
+  getAll(params?: FilterBidDto) {
     return this.bidsRepository.find({
       relations: {
         bidders: { user: true },
         // product: true
       },
+      skip: params?.offset,
+      take: params?.limit,
     });
   }
 

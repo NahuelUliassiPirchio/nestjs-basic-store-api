@@ -1,5 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsString, IsNotEmpty, IsUrl } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsUrl,
+  IsOptional,
+  IsPositive,
+  Min,
+} from 'class-validator';
 
 export class CreateBrandDto {
   @IsNotEmpty()
@@ -12,3 +19,13 @@ export class CreateBrandDto {
 }
 
 export class UpdateBrandDto extends PartialType(CreateBrandDto) {}
+
+export class FilterBrandDto {
+  @IsOptional()
+  @IsPositive()
+  readonly limit: number;
+
+  @IsOptional()
+  @Min(0)
+  readonly offset: number;
+}

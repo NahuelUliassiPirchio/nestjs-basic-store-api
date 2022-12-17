@@ -3,8 +3,10 @@ import {
   IsEnum,
   IsNotEmpty,
   IsOptional,
+  IsPositive,
   IsString,
   IsUrl,
+  Min,
   MinLength,
 } from 'class-validator';
 import { UserRole } from 'src/common/roles.enum';
@@ -42,3 +44,13 @@ export class CreateUserDto {
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
+
+export class FilterUserDto {
+  @IsOptional()
+  @IsPositive()
+  readonly limit: number;
+
+  @IsOptional()
+  @Min(0)
+  readonly offset: number;
+}

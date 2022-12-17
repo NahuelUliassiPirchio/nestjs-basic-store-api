@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  Min,
 } from 'class-validator';
 
 export class CreateOrderDto {
@@ -20,3 +21,13 @@ export class CreateOrderDto {
 }
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {}
+
+export class FilterOrderDto {
+  @IsOptional()
+  @IsPositive()
+  readonly limit: number;
+
+  @IsOptional()
+  @Min(0)
+  readonly offset: number;
+}

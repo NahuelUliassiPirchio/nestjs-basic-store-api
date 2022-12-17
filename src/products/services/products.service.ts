@@ -4,8 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateProductDto, UpdateProductDto } from '../dtos/product.dto';
+import { Between, Repository } from 'typeorm';
+import {
+  CreateProductDto,
+  FilterProductDto,
+  UpdateProductDto,
+} from '../dtos/product.dto';
 import { Product } from '../entities/product.entity';
 import { BrandsService } from './brands.service';
 import { CategoriesService } from './categories.service';
@@ -19,8 +23,21 @@ export class ProductsService {
     private categoriesService: CategoriesService,
   ) {}
 
-  getAll() {
-    return this.productsRepository.find({ relations: { categories: true } });
+  getAll(params?: FilterProductDto) {
+    if (params.minPrice > params.maxPrice) throw new ConflictException();
+    const price =
+      params.minPrice && params.maxPrice
+        ? Between(params.minPrice, params.maxPrice)
+        : undefined;
+
+    return this.productsRepository.find({
+      relations: { categories: true },
+      take: params.limit,
+      skip: params.offset,
+      where: {
+        price,
+      },
+    });
   }
 
   async getById(id: number) {

@@ -7,8 +7,9 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { CreateBidDto, UpdateBidDto } from '../dtos/bid.dto';
+import { CreateBidDto, FilterBidDto, UpdateBidDto } from '../dtos/bid.dto';
 import { BidsService } from '../services/bids.service';
 
 @Controller('bids')
@@ -16,8 +17,8 @@ export class BidsController {
   constructor(private bidsService: BidsService) {}
 
   @Get()
-  getAll() {
-    return this.bidsService.getAll();
+  getAll(@Query() params: FilterBidDto) {
+    return this.bidsService.getAll(params);
   }
 
   @Get(':id')

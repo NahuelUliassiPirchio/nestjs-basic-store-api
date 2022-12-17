@@ -5,7 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateOrderDto, UpdateOrderDto } from '../dtos/order.dto';
+import {
+  CreateOrderDto,
+  FilterOrderDto,
+  UpdateOrderDto,
+} from '../dtos/order.dto';
 import { Order } from '../entities/order.entity';
 import { UsersService } from './users.service';
 
@@ -16,9 +20,11 @@ export class OrdersService {
     private usersService: UsersService,
   ) {}
 
-  getAll() {
+  getAll(params?: FilterOrderDto) {
     return this.ordersRepository.find({
       relations: { user: true, orderItems: true },
+      skip: params?.offset,
+      take: params?.limit,
     });
   }
 
