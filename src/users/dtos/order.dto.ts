@@ -1,11 +1,10 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import {
   IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
-  IsString,
   Min,
 } from 'class-validator';
 

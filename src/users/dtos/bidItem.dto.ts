@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
 
 export class CreateBidItemDto {
@@ -14,4 +15,4 @@ export class CreateBidItemDto {
   readonly bidId: number;
 }
 
-export class UpdateBidItemDto extends CreateBidItemDto {}
+export class UpdateBidItemDto extends PartialType(CreateBidItemDto) {}

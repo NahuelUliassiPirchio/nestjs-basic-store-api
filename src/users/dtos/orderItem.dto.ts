@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsPositive } from 'class-validator';
 
 export class CreateOrderItemDto {
@@ -14,4 +15,4 @@ export class CreateOrderItemDto {
   readonly productId: number;
 }
 
-export class UpdateOrderItemDto extends CreateOrderItemDto {}
+export class UpdateOrderItemDto extends PartialType(CreateOrderItemDto) {}

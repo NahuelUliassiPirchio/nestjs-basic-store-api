@@ -1,6 +1,5 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import {
-  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsPositive,
@@ -9,7 +8,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
-import { UserRole } from 'src/common/roles.enum';
+// import { UserRole } from 'src/common/roles.enum';
 
 export class CreateUserDto {
   @IsNotEmpty()

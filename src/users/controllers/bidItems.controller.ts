@@ -7,9 +7,11 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateBidItemDto, UpdateBidItemDto } from '../dtos/bidItem.dto';
 import { BidItemsService } from '../services/bidItems.service';
 
+@ApiTags('bid-items')
 @Controller('bid-items')
 export class BidItemsController {
   constructor(private bidItemsService: BidItemsService) {}

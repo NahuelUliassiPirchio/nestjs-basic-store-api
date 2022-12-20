@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import {
@@ -19,6 +20,7 @@ import {
 } from '../dtos/category.dto';
 import { CategoriesService } from '../services/categories.service';
 
+@ApiTags('categories')
 @UseGuards(JwtAuthGuard)
 @Controller('categories')
 export class CategoriesController {

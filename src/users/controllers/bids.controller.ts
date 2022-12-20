@@ -9,9 +9,11 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateBidDto, FilterBidDto, UpdateBidDto } from '../dtos/bid.dto';
 import { BidsService } from '../services/bids.service';
 
+@ApiTags('bids')
 @Controller('bids')
 export class BidsController {
   constructor(private bidsService: BidsService) {}

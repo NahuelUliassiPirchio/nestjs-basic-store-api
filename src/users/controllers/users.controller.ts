@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -18,6 +19,7 @@ import { CreateUserDto, FilterUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { OrdersService } from '../services/orders.service';
 import { UsersService } from '../services/users.service';
 
+@ApiTags('users')
 @Controller('users')
 @Roles(UserRole.ADMIN)
 @UseGuards(JwtAuthGuard, RolesGuard)
