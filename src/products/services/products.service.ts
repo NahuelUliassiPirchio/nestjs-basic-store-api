@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, Like, Repository } from 'typeorm';
 import {
   CreateProductDto,
   FilterProductDto,
@@ -36,6 +36,13 @@ export class ProductsService {
       skip: params.offset,
       where: {
         price,
+        name: params.name ? Like(`%${params.name}%`) : undefined,
+        description: params.description
+          ? Like(`%${params.description}%`)
+          : undefined,
+      },
+      order: {
+        price: params.order ? params.order : undefined,
       },
     });
   }

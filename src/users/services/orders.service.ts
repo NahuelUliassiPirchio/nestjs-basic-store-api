@@ -25,6 +25,9 @@ export class OrdersService {
       relations: { user: true, orderItems: true },
       skip: params?.offset,
       take: params?.limit,
+      order: {
+        updatedAt: params?.order ? params.order : undefined,
+      },
     });
   }
 

@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsPositive,
+  IsString,
   Min,
 } from 'class-validator';
 
@@ -29,4 +30,8 @@ export class FilterOrderDto {
   @IsOptional()
   @Min(0)
   readonly offset: number;
+
+  @IsOptional()
+  @IsString()
+  readonly order: 'ASC' | 'DESC';
 }

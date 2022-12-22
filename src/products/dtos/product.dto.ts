@@ -61,4 +61,20 @@ export class FilterProductDto {
   @IsOptional()
   @IsPositive()
   readonly maxPrice: number;
+
+  @IsOptional()
+  @IsString()
+  readonly name: string;
+
+  @IsOptional()
+  @IsString()
+  readonly description: string;
+
+  @IsOptional()
+  @IsString()
+  readonly categoriesIds: number[];
+
+  @IsOptional()
+  @IsString()
+  readonly order: 'ASC' | 'DESC';
 }

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import {
   CreateCategoryDto,
   FilterCategoryDto,
@@ -23,6 +23,9 @@ export class CategoriesService {
     return this.categoriesRepository.find({
       take: params.limit,
       skip: params.offset,
+      where: {
+        name: params.name ? Like(`%${params.name}%`) : undefined,
+      },
     });
   }
 
@@ -31,9 +34,19 @@ export class CategoriesService {
   }
 
   async getById(id: number) {
-    const category = await this.categoriesRepository.findOneBy({ id });
+    const category = await this.categoriesRepository.findOne({
+      where: { id },
+      relations: ['products'],
+    });
     if (!category) throw new NotFoundException();
     return category;
+  }
+
+  async getProductsByCategory(id: number) {
+    const category = await this.getById(id);
+    console.log(category);
+
+    return category.products;
   }
 
   async addCategory(data: CreateCategoryDto) {

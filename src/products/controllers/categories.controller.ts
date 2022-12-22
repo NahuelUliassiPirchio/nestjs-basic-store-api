@@ -54,4 +54,10 @@ export class CategoriesController {
   deleteCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.deleteCategory(id);
   }
+
+  @Public()
+  @Get(':id/products')
+  getProductsByCategory(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriesService.getProductsByCategory(id);
+  }
 }

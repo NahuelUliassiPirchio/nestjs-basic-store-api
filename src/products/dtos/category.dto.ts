@@ -23,4 +23,8 @@ export class FilterCategoryDto {
   @IsOptional()
   @Min(0)
   readonly offset: number;
+
+  @IsOptional()
+  @IsString()
+  readonly name: string;
 }
