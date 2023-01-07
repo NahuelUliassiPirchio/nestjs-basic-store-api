@@ -8,8 +8,15 @@ import {
   Post,
   Put,
   Query,
+  Request,
+  Response,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { HasIdentity } from 'src/auth/decorators/identity.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { OwnsAuthGuard } from 'src/auth/guards/owns-auth.guard';
+import { UserRole } from 'src/common/roles.enum';
 import {
   CreateOrderDto,
   FilterOrderDto,
@@ -19,11 +26,17 @@ import { OrdersService } from '../services/orders.service';
 
 @ApiTags('orders')
 @Controller('orders')
+@UseGuards(JwtAuthGuard, OwnsAuthGuard)
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
   @Get()
-  getAll(@Query() params: FilterOrderDto) {
-    return this.ordersService.getAll(params);
+  @HasIdentity()
+  getAll(@Query() params: FilterOrderDto, @Request() req) {
+    if (req.user.role === UserRole.ADMIN) {
+      return this.ordersService.getAll(params);
+    } else {
+      return this.ordersService.getAllByUser(req.user.sub, params);
+    }
   }
 
   @Get(':id')
@@ -32,8 +45,12 @@ export class OrdersController {
   }
 
   @Post()
-  addOrder(@Body() orderData: CreateOrderDto) {
-    return this.ordersService.addOrder(orderData);
+  @HasIdentity()
+  addOrder(@Body() orderData: CreateOrderDto, @Request() req, @Response() res) {
+    if (req.user.role === 'ADMIN' || req.user.sub === orderData.userId) {
+      return this.ordersService.addOrder(orderData);
+    }
+    return res.status(403).send();
   }
 
   @Put(':id')

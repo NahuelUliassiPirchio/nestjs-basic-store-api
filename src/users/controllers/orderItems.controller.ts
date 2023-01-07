@@ -7,40 +7,50 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { OwnsAuthGuard } from 'src/auth/guards/owns-auth.guard';
 import { CreateOrderItemDto, UpdateOrderItemDto } from '../dtos/orderItem.dto';
 import { OrderItemsService } from '../services/orderItems.service';
 
-@ApiTags('order-items')
-@Controller('order-items')
+@ApiTags()
+@Controller('orders/:id/order-items')
+@UseGuards(JwtAuthGuard, OwnsAuthGuard)
 export class OrderItemsController {
   constructor(private orderItemsService: OrderItemsService) {}
   @Get()
-  getAll() {
-    return this.orderItemsService.getAll();
+  getAll(@Param('id', ParseIntPipe) id: number) {
+    return this.orderItemsService.getAll(id);
   }
 
-  @Get(':id')
-  getOrderItem(@Param('id', ParseIntPipe) id: number) {
-    return this.orderItemsService.getById(id);
+  @Get(':itemId')
+  getOrderItem(
+    @Param('id') id: number,
+    @Param('itemId', ParseIntPipe) itemId: number,
+  ) {
+    return this.orderItemsService.getById(itemId, id);
   }
 
   @Post()
-  addOrderItem(@Body() orderItemData: CreateOrderItemDto) {
-    return this.orderItemsService.addOrderItem(orderItemData);
+  addOrderItem(
+    @Param('id') id: number,
+    @Body() orderItemData: CreateOrderItemDto,
+  ) {
+    return this.orderItemsService.addOrderItem(id, orderItemData);
   }
 
-  @Put(':id')
+  @Put(':itemId')
   updateOrderItem(
-    @Param('id', ParseIntPipe) id,
+    @Param('itemId', ParseIntPipe) itemId: number,
     @Body() updateOrderItemData: UpdateOrderItemDto,
   ) {
-    return this.orderItemsService.updateOrderItem(id, updateOrderItemData);
+    return this.orderItemsService.updateOrderItem(itemId, updateOrderItemData);
   }
 
-  @Delete(':id')
-  deleteOrderItem(@Param('id', ParseIntPipe) id: number) {
-    return this.orderItemsService.deleteOrderItem(id);
+  @Delete(':itemId')
+  deleteOrderItem(@Param('itemId', ParseIntPipe) itemId: number) {
+    return this.orderItemsService.deleteOrderItem(itemId);
   }
 }

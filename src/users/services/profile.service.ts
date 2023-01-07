@@ -12,9 +12,9 @@ export class ProfileService {
   }
 
   updateProfile(user: User, profileData: UpdateUserDto) {
-    if (user.updatedAt.getTime() + 5 * 60 * 60 * 1000 > Date.now()) {
-      return user;
-    }
+    // if (user.updatedAt.getMilliseconds() + 5 * 60 * 60 * 1000 > Date.now()) {
+    //   return user;
+    // }
     return this.usersService.updateUser(user.id, profileData);
   }
 

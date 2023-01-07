@@ -25,6 +25,7 @@ import { CategoriesService } from '../services/categories.service';
 @Controller('categories')
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
+
   @Public()
   @Get()
   getAll(@Query() params: FilterCategoryDto) {

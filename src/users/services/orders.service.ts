@@ -31,6 +31,18 @@ export class OrdersService {
     });
   }
 
+  getAllByUser(sub: any, params: FilterOrderDto) {
+    return this.ordersRepository.find({
+      where: { user: { id: sub } },
+      relations: { orderItems: { product: true } },
+      skip: params?.offset,
+      take: params?.limit,
+      order: {
+        updatedAt: params?.order ? params.order : undefined,
+      },
+    });
+  }
+
   async getById(id: number) {
     const order = await this.ordersRepository.findOne({
       where: { id },
@@ -42,14 +54,13 @@ export class OrdersService {
 
   async getFromUserId(id: number) {
     const user = await this.usersService.getById(id);
-    return this.ordersRepository.find({ where: { user } });
+    return user.orders;
   }
 
   async getFromUserIdById(userId: number, orderId: number) {
-    const user = await this.usersService.getById(userId);
-    return this.ordersRepository.find({
+    return await this.ordersRepository.find({
       where: {
-        user,
+        user: { id: userId },
         id: orderId,
       },
     });

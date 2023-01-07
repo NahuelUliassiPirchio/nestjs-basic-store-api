@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductsService } from 'src/products/services/products.service';
 import { Repository } from 'typeorm';
 import { CreateOrderItemDto, UpdateOrderItemDto } from '../dtos/orderItem.dto';
 import { OrderItem } from '../entities/orderItem.entity';
@@ -15,38 +16,29 @@ export class OrderItemsService {
     @InjectRepository(OrderItem)
     private orderItemsRepository: Repository<OrderItem>,
     private ordersService: OrdersService,
+    private productsService: ProductsService,
   ) {}
 
-  getAll() {
-    return this.orderItemsRepository.find({ relations: { order: true } });
+  getAll(orderId: number) {
+    return this.orderItemsRepository.find({
+      where: { order: { id: orderId } },
+      relations: ['product'],
+    });
   }
 
-  async getById(id: number) {
+  async getById(id: number, orderId: number) {
     const orderItem = await this.orderItemsRepository.findOne({
-      where: { id },
-      relations: { order: true },
+      where: { id, order: { id: orderId } },
+      relations: { order: true, product: true },
     });
     if (!orderItem) throw new NotFoundException();
     return orderItem;
   }
 
-  async getAllFromOrder(orderId: number) {
-    const order = await this.ordersService.getById(orderId);
-    return order.orderItems;
-  }
-
-  async getByIdFromOrder(orderId: number, orderItemId: number) {
-    const order = await this.ordersService.getById(orderId);
-    const orderItem = await this.orderItemsRepository.findBy({
-      order,
-      id: orderItemId,
-    });
-    if (!orderItem) throw new NotFoundException();
-    return orderItem;
-  }
-
-  async addOrderItem(data: CreateOrderItemDto) {
+  async addOrderItem(orderId: number, data: CreateOrderItemDto) {
     const newOrderItem = this.orderItemsRepository.create(data);
+    newOrderItem.product = await this.productsService.getById(data.productId);
+    newOrderItem.order = await this.ordersService.getById(data.orderId);
 
     try {
       return await this.orderItemsRepository.save(newOrderItem);
@@ -57,13 +49,23 @@ export class OrderItemsService {
   }
 
   async updateOrderItem(id: number, changes: UpdateOrderItemDto) {
-    const orderItem = await this.getById(id);
+    const orderItem = await this.getById(id, changes.orderId);
+    if (changes.productId) {
+      const product = await this.productsService.getById(changes.productId);
+      orderItem.product = product;
+    }
+    if (changes.orderId) {
+      orderItem.order = await this.ordersService.getById(changes.orderId);
+    }
     this.orderItemsRepository.merge(orderItem, changes);
     return this.orderItemsRepository.save(orderItem);
   }
 
   async deleteOrderItem(id: number) {
-    await this.getById(id);
+    const deletedItem = await this.getById(id, 0);
+    deletedItem.order.orderItems = deletedItem.order.orderItems.filter(
+      (item) => item.id !== id,
+    );
     return this.orderItemsRepository.delete(id);
   }
 }
