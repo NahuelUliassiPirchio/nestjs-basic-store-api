@@ -6,13 +6,18 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { HasIdentity } from 'src/auth/decorators/identity.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { OwnsAuthGuard } from 'src/auth/guards/owns-auth.guard';
 import { CreateBidItemDto, UpdateBidItemDto } from '../dtos/bidItem.dto';
 import { BidItemsService } from '../services/bidItems.service';
 
 @ApiTags('bid-items')
 @Controller('bid-items')
+@UseGuards(JwtAuthGuard, OwnsAuthGuard)
 export class BidItemsController {
   constructor(private bidItemsService: BidItemsService) {}
   @Get()
@@ -26,6 +31,7 @@ export class BidItemsController {
   }
 
   @Post()
+  @HasIdentity()
   addBidItem(@Body() bidItemData: CreateBidItemDto) {
     return this.bidItemsService.addBidItem(bidItemData);
   }

@@ -18,6 +18,10 @@ export class CreateOrderDto {
   @IsArray()
   @IsNumber()
   readonly itemsIds: number[];
+
+  @IsOptional()
+  @IsPositive()
+  readonly userSub: number;
 }
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {}
@@ -34,4 +38,8 @@ export class FilterOrderDto {
   @IsOptional()
   @IsString()
   readonly order: 'ASC' | 'DESC';
+
+  @IsOptional()
+  @IsString()
+  readonly isActive: 'true' | 'false';
 }

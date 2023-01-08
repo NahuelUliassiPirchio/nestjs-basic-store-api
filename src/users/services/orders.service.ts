@@ -28,6 +28,9 @@ export class OrdersService {
       order: {
         updatedAt: params?.order ? params.order : undefined,
       },
+      where: {
+        isActive: params?.isActive ? params.isActive === 'true' : undefined,
+      },
     });
   }
 
@@ -67,6 +70,14 @@ export class OrdersService {
   }
 
   async addOrder(data: CreateOrderDto) {
+    const activeOrder = await this.ordersRepository.findOne({
+      where: { user: { id: data.userId }, isActive: true },
+    });
+    if (activeOrder) {
+      activeOrder.isActive = false;
+      await this.ordersRepository.save(activeOrder);
+    }
+
     const newOrder = new Order();
     newOrder.user = await this.usersService.getById(data.userId);
 

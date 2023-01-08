@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { skip } from 'rxjs';
 import { hash } from 'src/common/encryption.common';
 import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
@@ -19,6 +18,7 @@ export class UsersService {
 
   getAll(params) {
     return this.usersRepository.find({
+      relations: { bids: true, orders: true },
       skip: params.offset,
       take: params.limit,
     });

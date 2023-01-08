@@ -29,12 +29,13 @@ import { OrdersService } from '../services/orders.service';
 @UseGuards(JwtAuthGuard, OwnsAuthGuard)
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
+
   @Get()
   @HasIdentity()
   getAll(@Query() params: FilterOrderDto, @Request() req) {
     if (req.user.role === UserRole.ADMIN) {
       return this.ordersService.getAll(params);
-    } else {
+    } else if (req.user.sub) {
       return this.ordersService.getAllByUser(req.user.sub, params);
     }
   }
@@ -59,6 +60,11 @@ export class OrdersController {
     updateOrderData: UpdateOrderDto,
   ) {
     return this.ordersService.updateOrder(id, updateOrderData);
+  }
+
+  @Delete(':id')
+  deleteOrder(@Param('id', ParseIntPipe) id: number) {
+    return this.ordersService.deleteOrder(id);
   }
 
   @Get(':id/items')

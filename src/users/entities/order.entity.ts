@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
@@ -13,6 +14,9 @@ import { OrderItem } from './orderItem.entity';
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -30,6 +34,7 @@ export class Order {
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
     nullable: true,
+    onDelete: 'CASCADE',
   })
   orderItems: OrderItem[];
 

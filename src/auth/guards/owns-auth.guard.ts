@@ -16,15 +16,21 @@ export class OwnsAuthGuard implements CanActivate {
       HAS_IDENTITY_KEY,
       [context.getHandler(), context.getClass()],
     );
-    if (hasIdentity) return true;
 
     const request = context.switchToHttp().getRequest();
     if (request.user.role == UserRole.ADMIN) return true;
 
+    if (hasIdentity) {
+      return true;
+    }
+
+    const url = request.url;
+    const resource = url.includes('orders') ? 'orders' : 'bids';
+
     const user = await this.usersService.getById(request.user.sub);
-    const orders = user.orders;
-    const ownsOrder = orders.some(
-      (order) => order.id === parseInt(request.params.id),
+    const resourceList = user[resource];
+    const ownsOrder = resourceList.some(
+      (item: { id: number }) => item.id === parseInt(request.params.id),
     );
     return ownsOrder;
   }
