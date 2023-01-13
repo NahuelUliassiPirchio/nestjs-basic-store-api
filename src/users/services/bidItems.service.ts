@@ -17,7 +17,7 @@ export class BidItemsService {
   constructor(
     @InjectRepository(BidItem)
     private bidItemsRepository: Repository<BidItem>,
-    @Inject(forwardRef(() => BidsService)) //avoiding circular dependency
+    @Inject(forwardRef(() => BidsService))
     private bidsService: BidsService,
     private usersService: UsersService,
   ) {}

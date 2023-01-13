@@ -40,6 +40,9 @@ export class OrderItemsService {
     newOrderItem.product = await this.productsService.getById(data.productId);
     newOrderItem.order = await this.ordersService.getById(data.orderId);
 
+    if (!newOrderItem.order.isActive)
+      throw new ConflictException('The order is closed');
+
     try {
       return await this.orderItemsRepository.save(newOrderItem);
     } catch (error) {
@@ -56,15 +59,20 @@ export class OrderItemsService {
     }
     if (changes.orderId) {
       orderItem.order = await this.ordersService.getById(changes.orderId);
+      if (!orderItem.order.isActive)
+        throw new ConflictException('The order is closed');
     }
     this.orderItemsRepository.merge(orderItem, changes);
     return this.orderItemsRepository.save(orderItem);
   }
 
-  async deleteOrderItem(id: number) {
-    const deletedItem = await this.getById(id, 0);
-    deletedItem.order.orderItems = deletedItem.order.orderItems.filter(
-      (item) => item.id !== id,
+  async deleteOrderItem(id: number, orderId: number) {
+    const deletedItem = await this.getById(id, orderId);
+    if (!deletedItem.order.isActive)
+      throw new ConflictException('The order is closed');
+    const order = await this.ordersService.getById(orderId);
+    order.orderItems = order.orderItems.filter(
+      (orderItem) => orderItem.id !== id,
     );
     return this.orderItemsRepository.delete(id);
   }

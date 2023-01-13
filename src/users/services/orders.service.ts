@@ -36,7 +36,10 @@ export class OrdersService {
 
   getAllByUser(sub: any, params: FilterOrderDto) {
     return this.ordersRepository.find({
-      where: { user: { id: sub } },
+      where: {
+        user: { id: sub },
+        isActive: params?.isActive ? params.isActive === 'true' : undefined,
+      },
       relations: { orderItems: { product: true } },
       skip: params?.offset,
       take: params?.limit,
@@ -72,8 +75,12 @@ export class OrdersService {
   async addOrder(data: CreateOrderDto) {
     const activeOrder = await this.ordersRepository.findOne({
       where: { user: { id: data.userId }, isActive: true },
+      relations: { orderItems: true },
     });
     if (activeOrder) {
+      if (activeOrder.orderItems.length < 1)
+        throw new ConflictException('An active order already exists');
+
       activeOrder.isActive = false;
       await this.ordersRepository.save(activeOrder);
     }

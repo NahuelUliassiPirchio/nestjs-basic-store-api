@@ -10,7 +10,7 @@ export class Brand {
   name: string;
 
   @Column({ type: 'varchar', length: 255 })
-  image: string;
+  logo: string;
 
   @OneToMany(() => Product, (product) => product.brand)
   products: Product[];

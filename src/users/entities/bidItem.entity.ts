@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Transform } from 'class-transformer';
 
 @Entity()
 export class BidItem {
@@ -16,6 +17,9 @@ export class BidItem {
 
   @Column({ type: 'int', name: 'bid_amount' })
   bidAmount: number;
+
+  @Column({ type: 'boolean', name: 'is_anonymous', default: true })
+  isAnonymous: boolean;
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -34,6 +38,7 @@ export class BidItem {
   @ManyToOne(() => Bid, (bid) => bid.bidders)
   bid: Bid;
 
+  @Transform(({ value }) => (value.isAnonymous ? value : null))
   @ManyToOne(() => User, (user) => user.bids)
   user: User;
 }

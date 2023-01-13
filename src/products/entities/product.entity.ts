@@ -5,6 +5,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -31,10 +32,8 @@ export class Product {
   @Column({ type: 'int' })
   price: number;
 
-  @OneToOne(() => Bid, (bid) => bid.product, {
-    nullable: true,
-  })
-  bid: Bid;
+  @OneToMany(() => Bid, (bid) => bid.product)
+  bids: Bid[];
 
   @ManyToMany(() => Category, (category) => category.products)
   @JoinTable({

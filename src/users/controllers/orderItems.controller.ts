@@ -50,7 +50,10 @@ export class OrderItemsController {
   }
 
   @Delete(':itemId')
-  deleteOrderItem(@Param('itemId', ParseIntPipe) itemId: number) {
-    return this.orderItemsService.deleteOrderItem(itemId);
+  deleteOrderItem(
+    @Param('itemId', ParseIntPipe) itemId: number,
+    @Param('id') id: number,
+  ) {
+    return this.orderItemsService.deleteOrderItem(itemId, id);
   }
 }

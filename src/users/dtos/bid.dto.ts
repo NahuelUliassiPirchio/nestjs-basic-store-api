@@ -1,20 +1,21 @@
 import { PartialType } from '@nestjs/swagger';
 import {
   IsArray,
+  IsDateString,
   IsNotEmpty,
   IsOptional,
   IsPositive,
-  IsString,
   Min,
 } from 'class-validator';
 
 export class CreateBidDto {
+  // iso8601 format example: 2021-01-01T00:00:00.000Z
   @IsNotEmpty()
-  @IsString()
+  @IsDateString({ strict: true })
   readonly initialDate: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsDateString({ strict: true })
   readonly endDate: string;
 
   @IsNotEmpty()

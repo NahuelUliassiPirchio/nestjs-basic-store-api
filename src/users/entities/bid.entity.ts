@@ -2,8 +2,8 @@ import { Product } from '../../products/entities/product.entity';
 import {
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BidItem } from './bidItem.entity';
@@ -13,15 +13,15 @@ export class Bid {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', name: 'initial_date' })
-  initialDate: string;
+  @Column({ type: 'timestamptz', name: 'initial_date' })
+  initialDate: Date;
 
-  @Column({ type: 'varchar', name: 'end_date' })
-  endDate: string;
+  @Column({ type: 'timestamptz', name: 'end_date' })
+  endDate: Date;
 
   @OneToMany(() => BidItem, (biditem) => biditem.bid)
   bidders: BidItem[];
 
-  @OneToOne(() => Product, (product) => product.bid)
+  @ManyToOne(() => Product, (product) => product.bids)
   product: Product;
 }

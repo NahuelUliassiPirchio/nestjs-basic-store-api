@@ -21,7 +21,7 @@ export class CreateBrandDto {
     example:
       'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
   })
-  readonly image: string;
+  readonly logo: string;
 }
 
 export class UpdateBrandDto extends PartialType(CreateBrandDto) {}

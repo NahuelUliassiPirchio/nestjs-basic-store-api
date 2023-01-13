@@ -8,21 +8,30 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UserRole } from 'src/common/roles.enum';
 import { CreateBidDto, FilterBidDto, UpdateBidDto } from '../dtos/bid.dto';
 import { BidsService } from '../services/bids.service';
 
 @ApiTags('bids')
+@UseGuards(JwtAuthGuard)
+@Roles(UserRole.ADMIN)
 @Controller('bids')
 export class BidsController {
   constructor(private bidsService: BidsService) {}
 
+  @Public()
   @Get()
   getAll(@Query() params: FilterBidDto) {
     return this.bidsService.getAll(params);
   }
 
+  @Public()
   @Get(':id')
   getById(@Param('id', ParseIntPipe) id: number) {
     return this.bidsService.getById(id);

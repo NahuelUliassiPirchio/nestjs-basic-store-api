@@ -1,11 +1,11 @@
 import {
-  ConflictException,
   forwardRef,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductsService } from 'src/products/services/products.service';
 import { Repository } from 'typeorm';
 import { CreateBidDto, FilterBidDto, UpdateBidDto } from '../dtos/bid.dto';
 import { Bid } from '../entities/bid.entity';
@@ -18,13 +18,14 @@ export class BidsService {
     private bidsRepository: Repository<Bid>,
     @Inject(forwardRef(() => BidItemsService))
     private bidItemsService: BidItemsService,
+    private productService: ProductsService,
   ) {}
 
   getAll(params?: FilterBidDto) {
     return this.bidsRepository.find({
       relations: {
         bidders: { user: true },
-        // product: true
+        product: true,
       },
       skip: params?.offset,
       take: params?.limit,
@@ -43,17 +44,20 @@ export class BidsService {
   async addBid(data: CreateBidDto) {
     const newBid = this.bidsRepository.create(data);
 
-    try {
-      return await this.bidsRepository.save(newBid);
-    } catch (error) {
-      if (error?.code == 23505) throw new ConflictException();
-      else throw error;
-    }
+    newBid.product = await this.productService.getById(data.productId);
+
+    newBid.initialDate = new Date(data.initialDate);
+    newBid.endDate = new Date(data.endDate);
+
+    return await this.bidsRepository.save(newBid);
   }
 
   async updateBid(id: number, changes: UpdateBidDto) {
     const bid = await this.getById(id);
     this.bidsRepository.merge(bid, changes);
+    if (changes.productId)
+      bid.product = await this.productService.getById(changes.productId);
+
     return this.bidsRepository.save(bid);
   }
 
