@@ -28,6 +28,13 @@ export class BidItemsService {
     });
   }
 
+  getAllByUser(id: number) {
+    return this.bidItemsRepository.find({
+      relations: { bid: true, user: true },
+      where: { user: { id } },
+    });
+  }
+
   async getById(id: number) {
     const bidItem = await this.bidItemsRepository.findOne({
       relations: { user: true },
@@ -44,18 +51,20 @@ export class BidItemsService {
 
   async getByIdFromBid(bidId: number, bidItemId: number) {
     const bid = await this.bidsService.getById(bidId);
-    const bidItem = await this.bidItemsRepository.findBy({
-      bid,
-      id: bidItemId,
-    });
+
+    const bidItem = bid.bidders.find((item) => item.id == bidItemId);
     if (!bidItem) throw new NotFoundException();
     return bidItem;
   }
 
   async addBidItem(data: CreateBidItemDto) {
     const newBidItem = this.bidItemsRepository.create(data);
-    const user = await this.usersService.getById(data.userId);
-    newBidItem.user = user;
+    newBidItem.user = await this.usersService.getById(data.userId);
+    newBidItem.bid = await this.bidsService.getById(data.bidId);
+    if (newBidItem.bid.currentPrice >= newBidItem.bidAmount)
+      throw new ConflictException(
+        'The bid amount must be higher than the current price',
+      );
     try {
       return await this.bidItemsRepository.save(newBidItem);
     } catch (error) {
@@ -70,12 +79,17 @@ export class BidItemsService {
       const user = await this.usersService.getById(changes.userId);
       bidItem.user = user;
     }
+    if (changes.bidId) {
+      const bid = await this.bidsService.getById(changes.bidId);
+      bidItem.bid = bid;
+    }
     this.bidItemsRepository.merge(bidItem, changes);
     return this.bidItemsRepository.save(bidItem);
   }
 
   async deleteBidItem(id: number) {
-    await this.getById(id);
-    return this.bidItemsRepository.delete(id);
+    const deleteNotif = await this.bidItemsRepository.delete(id);
+    if (deleteNotif.affected == 0) throw new NotFoundException();
+    return { message: 'BidItem deleted' };
   }
 }

@@ -14,6 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { HasIdentity } from 'src/auth/decorators/identity.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { OwnsAuthGuard } from 'src/auth/guards/owns-auth.guard';
+import { UserRole } from 'src/common/roles.enum';
 import { CreateBidItemDto, UpdateBidItemDto } from '../dtos/bidItem.dto';
 import { BidItemsService } from '../services/bidItems.service';
 
@@ -23,13 +24,18 @@ import { BidItemsService } from '../services/bidItems.service';
 export class BidItemsController {
   constructor(private bidItemsService: BidItemsService) {}
   @Get()
-  getAll() {
-    return this.bidItemsService.getAll();
+  @HasIdentity()
+  getAll(@Request() req) {
+    if (req.user.role === UserRole.ADMIN) return this.bidItemsService.getAll();
+    return this.bidItemsService.getAllByUser(req.user.sub);
   }
 
   @Get(':itemId')
-  getBidItem(@Param('id', ParseIntPipe) id: number) {
-    return this.bidItemsService.getById(id);
+  getBidItem(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('itemId') itemId: number,
+  ) {
+    return this.bidItemsService.getByIdFromBid(id, itemId);
   }
 
   @Post()
@@ -40,7 +46,7 @@ export class BidItemsController {
     @Request() req,
   ) {
     if (req.user.sub !== bidItemData.userId) throw new Error('Unauthorized');
-    if (id !== bidItemData.bidId) throw new Error('Unauthorized');
+    // if (id !== bidItemData.bidId) throw new Error('Unauthorized');
     return this.bidItemsService.addBidItem(bidItemData);
   }
 

@@ -37,7 +37,11 @@ export class OrderItemsService {
 
   async addOrderItem(orderId: number, data: CreateOrderItemDto) {
     const newOrderItem = this.orderItemsRepository.create(data);
+
     newOrderItem.product = await this.productsService.getById(data.productId);
+    if (newOrderItem.product.bids.some((bid) => bid.isActive))
+      throw new ConflictException('The product is in a bid');
+
     newOrderItem.order = await this.ordersService.getById(data.orderId);
 
     if (!newOrderItem.order.isActive)
@@ -55,6 +59,9 @@ export class OrderItemsService {
     const orderItem = await this.getById(id, changes.orderId);
     if (changes.productId) {
       const product = await this.productsService.getById(changes.productId);
+      if (product.bids.some((bid) => bid.isActive))
+        throw new ConflictException('The product is in a bid');
+
       orderItem.product = product;
     }
     if (changes.orderId) {

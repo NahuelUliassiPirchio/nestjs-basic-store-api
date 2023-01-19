@@ -28,10 +28,15 @@ export class OwnsAuthGuard implements CanActivate {
     const resource = url.includes('orders') ? 'orders' : 'bids';
 
     const user = await this.usersService.getById(request.user.sub);
-    const resourceList = user[resource];
-    const ownsOrder = resourceList.some(
-      (item: { id: number }) => item.id === parseInt(request.params.id),
-    );
-    return ownsOrder;
+    let resourceList = [];
+    if (resource === 'orders') {
+      resourceList = user.orders;
+    } else {
+      resourceList = user.bids.map((bid) => bid.bid);
+    }
+    const ownsResource = resourceList.some((item: { id: number }) => {
+      return item.id === parseInt(request.params.id);
+    });
+    return ownsResource;
   }
 }

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Like, Repository } from 'typeorm';
+import { Between, In, IsNull, Like, Not, Repository } from 'typeorm';
 import {
   CreateProductDto,
   FilterProductDto,
@@ -30,12 +30,22 @@ export class ProductsService {
         ? Between(params.minPrice, params.maxPrice)
         : undefined;
 
+    let hasActiveBid = Not(IsNull());
+    if (params.hasBid === false) hasActiveBid = IsNull();
+    else if (params.hasBid === undefined) hasActiveBid = undefined;
+
     return this.productsRepository.find({
-      relations: { categories: true },
+      relations: { categories: true, bids: true },
       take: params.limit,
       skip: params.offset,
       where: {
         price,
+        bids: {
+          id: hasActiveBid,
+        },
+        categories: {
+          id: params.categoryId ? In([params.categoryId]) : undefined,
+        },
         name: params.name ? Like(`%${params.name}%`) : undefined,
         description: params.description
           ? Like(`%${params.description}%`)
@@ -49,7 +59,7 @@ export class ProductsService {
 
   async getById(id: number) {
     const product = await this.productsRepository.findOne({
-      relations: { categories: true },
+      relations: { categories: true, bids: true },
       where: { id },
     });
     if (!product) throw new NotFoundException();

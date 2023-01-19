@@ -32,9 +32,9 @@ export class BidsService {
     });
   }
 
-  getById(id: number) {
-    const bid = this.bidsRepository.findOne({
-      relations: { bidders: { user: true } },
+  async getById(id: number) {
+    const bid = await this.bidsRepository.findOne({
+      relations: { bidders: { user: true }, product: true },
       where: { id },
     });
     if (!bid) throw new NotFoundException();

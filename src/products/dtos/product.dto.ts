@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -71,10 +72,14 @@ export class FilterProductDto {
   readonly description: string;
 
   @IsOptional()
-  @IsString()
-  readonly categoriesIds: number[];
+  @IsPositive()
+  readonly categoryId: number;
 
   @IsOptional()
   @IsString()
   readonly order: 'ASC' | 'DESC';
+
+  @IsOptional()
+  @IsBoolean()
+  readonly hasBid: boolean;
 }

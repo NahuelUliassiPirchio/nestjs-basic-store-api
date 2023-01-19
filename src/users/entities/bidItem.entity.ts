@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { Transform } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 
 @Entity()
 export class BidItem {
@@ -35,10 +35,13 @@ export class BidItem {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Bid, (bid) => bid.bidders)
+  @ManyToOne(() => Bid, (bid) => bid.bidders) // set null?
   bid: Bid;
 
-  @Transform(({ value }) => (value.isAnonymous ? value : null))
   @ManyToOne(() => User, (user) => user.bids)
+  @Transform(({ value }) => {
+    if (value.isAnonymous) return { username: 'Anonymous' };
+    return { id: value.id, name: value.name };
+  })
   user: User;
 }

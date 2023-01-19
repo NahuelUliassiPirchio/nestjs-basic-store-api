@@ -10,7 +10,7 @@ export class CreateBidItemDto {
   @IsPositive()
   readonly userId: number;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsPositive()
   readonly bidId: number;
 
