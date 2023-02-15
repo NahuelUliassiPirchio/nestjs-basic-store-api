@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { DatabaseModule } from './database/database.module';
@@ -25,9 +23,8 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       limit: 10,
     }),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: 'APP_GUARD',
       useClass: ThrottlerGuard,

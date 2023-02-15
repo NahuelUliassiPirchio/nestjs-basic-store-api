@@ -8,7 +8,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dto';
 import { BrandsService } from '../services/brands.service';
 
@@ -18,21 +18,30 @@ export class BrandsController {
   constructor(private brandsService: BrandsService) {}
 
   @Get()
+  @ApiResponse({ status: 200, description: 'Get all brands' })
   getAll() {
     return this.brandsService.getAll();
   }
 
   @Get(':id')
+  @ApiResponse({ status: 200, description: 'Get brand' })
+  @ApiResponse({ status: 404, description: 'Brand not found' })
   getById(@Param('id', ParseIntPipe) id: number) {
     return this.brandsService.getById(id);
   }
 
   @Post()
+  @ApiResponse({ status: 201, description: 'Brand created' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 419, description: 'Brand already exists' })
   addBrand(@Body() brandData: CreateBrandDto) {
     return this.brandsService.addBrand(brandData);
   }
 
   @Put(':id')
+  @ApiResponse({ status: 200, description: 'Brand updated' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Brand not found' })
   updateBrand(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateBrandData: UpdateBrandDto,
@@ -41,6 +50,9 @@ export class BrandsController {
   }
 
   @Delete(':id')
+  @ApiResponse({ status: 200, description: 'Brand deleted' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Brand not found' })
   deleteBrand(@Param('id', ParseIntPipe) id: number) {
     return this.brandsService.deleteBrand(id);
   }

@@ -9,23 +9,30 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { OwnsAuthGuard } from 'src/auth/guards/owns-auth.guard';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { OwnsAuthGuard } from '../../auth/guards/owns-auth.guard';
 import { CreateOrderItemDto, UpdateOrderItemDto } from '../dtos/orderItem.dto';
 import { OrderItemsService } from '../services/orderItems.service';
 
-@ApiTags()
+@ApiTags('orders/:id/order-items')
+@ApiBearerAuth()
 @Controller('orders/:id/order-items')
 @UseGuards(JwtAuthGuard, OwnsAuthGuard)
 export class OrderItemsController {
   constructor(private orderItemsService: OrderItemsService) {}
+
+  @ApiResponse({ status: 200, description: 'Get all order items' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get()
   getAll(@Param('id', ParseIntPipe) id: number) {
     return this.orderItemsService.getAll(id);
   }
 
   @Get(':itemId')
+  @ApiResponse({ status: 200, description: 'Get order item' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Order item not found' })
   getOrderItem(
     @Param('id') id: number,
     @Param('itemId', ParseIntPipe) itemId: number,
@@ -34,6 +41,8 @@ export class OrderItemsController {
   }
 
   @Post()
+  @ApiResponse({ status: 201, description: 'Order item created' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   addOrderItem(
     @Param('id') id: number,
     @Body() orderItemData: CreateOrderItemDto,
@@ -42,6 +51,9 @@ export class OrderItemsController {
   }
 
   @Put(':itemId')
+  @ApiResponse({ status: 200, description: 'Order item updated' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Order item not found' })
   updateOrderItem(
     @Param('itemId', ParseIntPipe) itemId: number,
     @Body() updateOrderItemData: UpdateOrderItemDto,
@@ -50,6 +62,9 @@ export class OrderItemsController {
   }
 
   @Delete(':itemId')
+  @ApiResponse({ status: 200, description: 'Order item deleted' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Order item not found' })
   deleteOrderItem(
     @Param('itemId', ParseIntPipe) itemId: number,
     @Param('id') id: number,
