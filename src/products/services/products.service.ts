@@ -4,7 +4,16 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, In, IsNull, Like, Not, Repository } from 'typeorm';
+import {
+  Between,
+  In,
+  IsNull,
+  LessThan,
+  Like,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 import {
   CreateProductDto,
   FilterProductDto,
@@ -23,26 +32,32 @@ export class ProductsService {
     private categoriesService: CategoriesService,
   ) {}
 
-  getAll(params?: FilterProductDto) {
+  async getAll(params?: FilterProductDto) {
     if (params.minPrice > params.maxPrice) throw new ConflictException();
+    const limit = params.limit || 10;
+    const offset = params.offset || 0;
     const price =
       params.minPrice && params.maxPrice
         ? Between(params.minPrice, params.maxPrice)
         : undefined;
 
-    let hasActiveBid = Not(IsNull());
-    if (params.hasBid === false) hasActiveBid = IsNull();
-    else if (params.hasBid === undefined) hasActiveBid = undefined;
+    let bidsFilter: any = {
+      id: Not(IsNull()),
+      endDate: MoreThanOrEqual(new Date()),
+    };
+    if (params.hasBid === false) {
+      bidsFilter = [{ id: IsNull() }, { endDate: LessThan(new Date()) }];
+    } else if (params.hasBid === undefined) {
+      bidsFilter = undefined;
+    }
 
-    return this.productsRepository.find({
+    const [products, total] = await this.productsRepository.findAndCount({
       relations: { categories: true, bids: true },
-      take: params.limit,
-      skip: params.offset,
+      take: limit,
+      skip: offset,
       where: {
         price,
-        bids: {
-          id: hasActiveBid,
-        },
+        bids: bidsFilter,
         categories: {
           id: params.categoryId ? In([params.categoryId]) : undefined,
         },
@@ -55,6 +70,12 @@ export class ProductsService {
         price: params.order ? params.order : undefined,
       },
     });
+
+    return {
+      data: products,
+      totalProducts: total,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async getById(id: number) {

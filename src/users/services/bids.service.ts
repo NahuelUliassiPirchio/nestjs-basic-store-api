@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsService } from 'src/products/services/products.service';
-import { Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { CreateBidDto, FilterBidDto, UpdateBidDto } from '../dtos/bid.dto';
 import { Bid } from '../entities/bid.entity';
 import { BidItemsService } from './bidItems.service';
@@ -26,6 +26,9 @@ export class BidsService {
       relations: {
         bidders: { user: true },
         product: true,
+      },
+      where: {
+        endDate: params?.isActive ? MoreThanOrEqual(new Date()) : undefined,
       },
       skip: params?.offset,
       take: params?.limit,

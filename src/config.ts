@@ -8,6 +8,7 @@ export default registerAs('config', () => {
       port: parseInt(process.env.DATABASE_PORT, 10),
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
+      uri: process.env.DATABASE_URI,
     },
     jwt: {
       secret: process.env.JWT_SECRET,

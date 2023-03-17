@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsDateString,
   IsNotEmpty,
   IsOptional,
@@ -37,4 +38,8 @@ export class FilterBidDto {
   @IsOptional()
   @Min(0)
   readonly offset: number;
+
+  @IsOptional()
+  @IsBoolean()
+  readonly isActive: boolean;
 }
