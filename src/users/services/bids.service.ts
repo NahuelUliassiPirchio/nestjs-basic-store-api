@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductsService } from 'src/products/services/products.service';
+import { ProductsService } from '../../products/services/products.service';
 import { MoreThanOrEqual, Repository } from 'typeorm';
 import { CreateBidDto, FilterBidDto, UpdateBidDto } from '../dtos/bid.dto';
 import { Bid } from '../entities/bid.entity';

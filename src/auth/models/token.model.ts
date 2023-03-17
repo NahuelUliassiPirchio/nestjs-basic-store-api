@@ -1,4 +1,4 @@
-import { UserRole } from 'src/common/roles.enum';
+import { UserRole } from '../../common/roles.enum';
 
 export interface TokenPayload {
   role: UserRole;

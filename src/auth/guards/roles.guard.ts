@@ -3,12 +3,10 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
-  NotAcceptableException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
-import { UserRole } from 'src/common/roles.enum';
+import { UserRole } from '../../common/roles.enum';
 import { ROLES_KEY } from '../decorators/role.decorator';
 
 @Injectable()
