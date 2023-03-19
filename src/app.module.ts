@@ -9,9 +9,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
-    AuthModule,
-    UsersModule,
-    ProductsModule,
+    //AuthModule,
+    //UsersModule,
+    //ProductsModule,
     DatabaseModule,
     ConfigModule.forRoot({
       envFilePath: '.env',

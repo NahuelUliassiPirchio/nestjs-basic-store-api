@@ -9,9 +9,9 @@ async function bootstrap() {
   console.log('line 9 initializing main');
   
   const app = await NestFactory.create(AppModule);
+  console.log( 'line 12 ' + app );
   app.enableCors();
   app.use(helmet());
-  console.log( 'line 14 ' + app );
   
   app.useGlobalPipes(
     new ValidationPipe({
