@@ -33,9 +33,6 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  const port = process.env.PORT || 3000;
-  await app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-  });
+  await app.listen(3001);
 }
 bootstrap();
