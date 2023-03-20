@@ -11,6 +11,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from '../../auth/decorators/role.decorator';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { UserRole } from '../../common/roles.enum';
 import { Public } from '../../auth/decorators/public.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import {
@@ -50,6 +53,8 @@ export class CategoriesController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Category not found' })
   @ApiResponse({ status: 419, description: 'Category already exists' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   addCategory(@Body() categoryData: CreateCategoryDto) {
     return this.categoriesService.addCategory(categoryData);
   }
@@ -58,6 +63,8 @@ export class CategoriesController {
   @ApiResponse({ status: 200, description: 'Category updated' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Category not found' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   updateCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryData: UpdateCategoryDto,
@@ -69,6 +76,8 @@ export class CategoriesController {
   @ApiResponse({ status: 200, description: 'Category deleted' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Category not found' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   deleteCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.deleteCategory(id);
   }

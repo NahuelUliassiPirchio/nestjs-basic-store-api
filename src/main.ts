@@ -6,13 +6,10 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  console.log('line 9 initializing main');
-  
   const app = await NestFactory.create(AppModule);
-  console.log( 'line 12 ' + app );
+
   app.enableCors();
   app.use(helmet());
-  
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -33,6 +30,10 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  await app.listen(3001);
+
+  const port = process.env.PORT || 3001;
+  await app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
 }
 bootstrap();

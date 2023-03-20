@@ -8,8 +8,13 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from '../../auth/decorators/role.decorator';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { UserRole } from '../../common/roles.enum';
 import {
   CreateProductDto,
   FilterProductDto,
@@ -38,6 +43,8 @@ export class ProductsController {
   @ApiResponse({ status: 201, description: 'Product created' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Category not found' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   addProduct(@Body() productData: CreateProductDto) {
     return this.productsService.addProduct(productData);
   }
@@ -47,6 +54,8 @@ export class ProductsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Product not found' })
   @ApiResponse({ status: 404, description: 'Category not found' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductData: UpdateProductDto,
@@ -58,6 +67,8 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: 'Product deleted' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Product not found' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   deleteProduct(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.deleteProduct(id);
   }
@@ -66,6 +77,8 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: 'Category added to product' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Product not found' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   addCategoryToProduct(
     @Param('id', ParseIntPipe) id: number,
     @Param('category_id', ParseIntPipe) categoryId: number,
@@ -77,6 +90,8 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: 'Category deleted from product' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Product not found' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   deleteCategoryFromProduct(
     @Param('id', ParseIntPipe) id: number,
     @Param('category_id', ParseIntPipe) categoryId: number,

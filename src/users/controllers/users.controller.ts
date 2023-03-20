@@ -21,8 +21,8 @@ import { UsersService } from '../services/users.service';
 
 @ApiTags('users')
 @Controller('users')
-// @Roles(UserRole.ADMIN)
-// @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ADMIN)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(
     private usersService: UsersService,

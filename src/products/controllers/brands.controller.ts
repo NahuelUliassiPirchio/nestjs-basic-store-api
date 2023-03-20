@@ -7,8 +7,13 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from '../../auth/decorators/role.decorator';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { UserRole } from '../../common/roles.enum';
 import { CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dto';
 import { BrandsService } from '../services/brands.service';
 
@@ -34,6 +39,8 @@ export class BrandsController {
   @ApiResponse({ status: 201, description: 'Brand created' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 419, description: 'Brand already exists' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   addBrand(@Body() brandData: CreateBrandDto) {
     return this.brandsService.addBrand(brandData);
   }
@@ -42,6 +49,8 @@ export class BrandsController {
   @ApiResponse({ status: 200, description: 'Brand updated' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Brand not found' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   updateBrand(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateBrandData: UpdateBrandDto,
@@ -53,6 +62,8 @@ export class BrandsController {
   @ApiResponse({ status: 200, description: 'Brand deleted' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Brand not found' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   deleteBrand(@Param('id', ParseIntPipe) id: number) {
     return this.brandsService.deleteBrand(id);
   }

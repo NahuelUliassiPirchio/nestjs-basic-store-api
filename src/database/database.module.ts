@@ -12,7 +12,7 @@ import config from '../config';
         return {
           type: 'postgres',
           url: uri,
-          synchronize: true,
+          synchronize: false,
           entities: ['dist/**/*.entity{.ts,.js}'],
         };
       },
