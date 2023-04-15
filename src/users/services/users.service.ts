@@ -37,7 +37,7 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-  async addUser(data: CreateUserDto) {
+  async addUser(data: CreateUserDto): Promise<User> {
     const newUser = this.usersRepository.create(data);
     if (!data.avatar) {
       const userName = newUser.name.replace(' ', '+');
