@@ -13,7 +13,7 @@ import config from '../config';
           type: 'postgres',
           url: uri,
           synchronize: false,
-          entities: ['dist/**/*.entity{.ts,.js}'],
+          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         };
       },
     }),
