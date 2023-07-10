@@ -52,10 +52,11 @@ export class ProductsService {
     }
 
     const [products, total] = await this.productsRepository.findAndCount({
-      relations: { categories: true, bids: true },
+      relations: { bids: true, brand: true },
       take: limit,
       skip: offset,
       where: {
+        brand: params.brandId ? { id: params.brandId } : undefined,
         price,
         bids: bidsFilter,
         categories: {
@@ -80,7 +81,7 @@ export class ProductsService {
 
   async getById(id: number) {
     const product = await this.productsRepository.findOne({
-      relations: { categories: true, bids: true },
+      relations: { categories: true, bids: true, brand: true },
       where: { id },
     });
     if (!product) throw new NotFoundException();

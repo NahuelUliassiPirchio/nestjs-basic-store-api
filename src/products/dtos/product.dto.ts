@@ -82,4 +82,8 @@ export class FilterProductDto {
   @IsOptional()
   @IsBoolean()
   readonly hasBid: boolean;
+
+  @IsOptional()
+  @IsPositive()
+  readonly brandId: number;
 }
