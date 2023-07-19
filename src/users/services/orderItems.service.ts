@@ -1,7 +1,9 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsService } from '../../products/services/products.service';
@@ -15,8 +17,9 @@ export class OrderItemsService {
   constructor(
     @InjectRepository(OrderItem)
     private orderItemsRepository: Repository<OrderItem>,
-    private ordersService: OrdersService,
     private productsService: ProductsService,
+    @Inject(forwardRef(() => OrdersService))
+    private ordersService: OrdersService,
   ) {}
 
   getAll(orderId: number) {
@@ -42,7 +45,7 @@ export class OrderItemsService {
     if (newOrderItem.product.bids.some((bid) => bid.isActive))
       throw new ConflictException('The product is in a bid');
 
-    newOrderItem.order = await this.ordersService.getById(data.orderId);
+    newOrderItem.order = await this.ordersService.getById(orderId);
 
     if (!newOrderItem.order.isActive)
       throw new ConflictException('The order is closed');

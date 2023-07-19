@@ -32,6 +32,14 @@ export class ProductsService {
     private categoriesService: CategoriesService,
   ) {}
 
+  async checkProductsExistence(productIds: number[]) {
+    await Promise.all(
+      productIds.map(async (productId) => {
+        await this.getById(productId);
+      }),
+    );
+  }
+
   async getAll(params?: FilterProductDto) {
     if (params.minPrice > params.maxPrice) throw new ConflictException();
     const limit = params.limit || 10;

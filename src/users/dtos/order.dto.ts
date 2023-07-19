@@ -1,13 +1,15 @@
 import { PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsPositive,
   IsString,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { CreateOrderItemDto } from './orderItem.dto';
 
 export class CreateOrderDto {
   @IsNotEmpty()
@@ -16,8 +18,9 @@ export class CreateOrderDto {
 
   @IsOptional()
   @IsArray()
-  @IsNumber()
-  readonly itemsIds: number[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateOrderItemDto)
+  readonly initialItems: CreateOrderItemDto[];
 
   @IsOptional()
   @IsPositive()

@@ -1,7 +1,9 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,12 +14,18 @@ import {
 } from '../dtos/order.dto';
 import { Order } from '../entities/order.entity';
 import { UsersService } from './users.service';
+import { OrderItemsService } from './orderItems.service';
+import { ProductsService } from 'src/products/services/products.service';
+import { log } from 'console';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order) private ordersRepository: Repository<Order>,
     private usersService: UsersService,
+    @Inject(forwardRef(() => OrderItemsService))
+    private ordersItemsService: OrderItemsService,
+    private productsService: ProductsService,
   ) {}
 
   getAll(params?: FilterOrderDto) {
@@ -85,12 +93,30 @@ export class OrdersService {
       await this.ordersRepository.save(activeOrder);
     }
 
-    const newOrder = new Order();
+    let newOrder = new Order();
     newOrder.user = await this.usersService.getById(data.userId);
 
+    if (data.initialItems) {
+      try {
+        await this.productsService.checkProductsExistence(
+          data.initialItems.map((orderItem) => orderItem.productId),
+        );
+        newOrder = await this.ordersRepository.save(newOrder);
+        await Promise.all(
+          data.initialItems.map(async (orderItem) => {
+            await this.ordersItemsService.addOrderItem(newOrder.id, orderItem);
+          }),
+        );
+        return newOrder;
+      } catch (error) {
+        throw new NotFoundException();
+      }
+    }
+
     try {
-      return await this.ordersRepository.save(newOrder);
+      return this.ordersRepository.save(newOrder);
     } catch (error) {
+      console.log(`error code ${error?.code}`);
       if (error?.code == 23505) throw new ConflictException();
       else throw error;
     }

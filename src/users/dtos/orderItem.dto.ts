@@ -1,12 +1,12 @@
 import { PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsPositive } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
 
 export class CreateOrderItemDto {
   @IsNotEmpty()
   @IsPositive()
   readonly quantity: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsPositive()
   readonly orderId: number;
 

@@ -58,10 +58,9 @@ export class OrdersController {
   @Post()
   @HasIdentity()
   addOrder(@Body() orderData: CreateOrderDto, @Request() req) {
-    if (req.user.role === 'ADMIN' || req.user.sub === orderData.userId) {
-      const newOrder = this.ordersService.addOrder(orderData);
-      return newOrder;
-    }
+    // if (req.user.role === 'ADMIN' || req.user.sub === orderData.userId) {
+    return this.ordersService.addOrder(orderData);
+    // }
     // return res.status(403).send();
   }
 
