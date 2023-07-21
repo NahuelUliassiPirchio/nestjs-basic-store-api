@@ -80,6 +80,10 @@ export class FilterProductDto {
   readonly order: 'ASC' | 'DESC';
 
   @IsOptional()
+  @IsString()
+  readonly searchTerm: string;
+
+  @IsOptional()
   @IsBoolean()
   readonly hasBid: boolean;
 

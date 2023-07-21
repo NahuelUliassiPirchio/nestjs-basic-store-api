@@ -6,6 +6,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Between,
+  FindOptionsWhere,
+  FindOptionsWhereProperty,
+  ILike,
   In,
   IsNull,
   LessThan,
@@ -59,22 +62,37 @@ export class ProductsService {
       bidsFilter = undefined;
     }
 
+    let whereConditions: FindOptionsWhereProperty<Product> = {
+      brand: params.brandId ? { id: params.brandId } : undefined,
+      price,
+      bids: bidsFilter,
+      categories: {
+        id: params.categoryId ? In([params.categoryId]) : undefined,
+      },
+      name: params.name ? ILike(`%${params.name}%`) : undefined,
+      description: params.description
+        ? ILike(`%${params.description}%`)
+        : undefined,
+    };
+
+    if (params.searchTerm) {
+      const searchTerm = `%${params.searchTerm}%`;
+      whereConditions = [
+        { name: ILike(searchTerm) },
+        { description: ILike(searchTerm) },
+        {
+          brand: {
+            name: ILike(searchTerm),
+          },
+        },
+      ];
+    }
+
     const [products, total] = await this.productsRepository.findAndCount({
       relations: { bids: true, brand: true },
       take: limit,
       skip: offset,
-      where: {
-        brand: params.brandId ? { id: params.brandId } : undefined,
-        price,
-        bids: bidsFilter,
-        categories: {
-          id: params.categoryId ? In([params.categoryId]) : undefined,
-        },
-        name: params.name ? Like(`%${params.name}%`) : undefined,
-        description: params.description
-          ? Like(`%${params.description}%`)
-          : undefined,
-      },
+      where: whereConditions,
       order: {
         price: params.order ? params.order : undefined,
       },
