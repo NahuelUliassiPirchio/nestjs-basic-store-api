@@ -18,10 +18,12 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       load: [config],
       isGlobal: true,
     }),
-    ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 10,
-    }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60_000,
+        limit: 10,
+      },
+    ]),
   ],
   controllers: [],
   providers: [

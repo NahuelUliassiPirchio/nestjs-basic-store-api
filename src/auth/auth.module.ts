@@ -4,7 +4,7 @@ import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthController } from './controllers/auth.controller';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import config from '../config';
 import { ConfigType } from '@nestjs/config';
@@ -18,7 +18,14 @@ import { ConfigType } from '@nestjs/config';
       inject: [config.KEY],
       useFactory: (configService: ConfigType<typeof config>) => {
         const { secret, expiresIn } = configService.jwt;
-        return { secret, signOptions: { expiresIn } };
+        return {
+          secret,
+          signOptions: {
+            expiresIn: expiresIn as NonNullable<
+              JwtModuleOptions['signOptions']
+            >['expiresIn'],
+          },
+        };
       },
     }),
   ],

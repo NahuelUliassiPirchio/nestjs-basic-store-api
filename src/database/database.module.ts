@@ -8,11 +8,12 @@ import config from '../config';
     TypeOrmModule.forRootAsync({
       inject: [config.KEY],
       useFactory: (configService: ConfigType<typeof config>) => {
-        const { uri } = configService.database;
+        const { uri, synchronize, logging } = configService.database;
         return {
           type: 'postgres',
           url: uri,
-          synchronize: false,
+          synchronize,
+          logging,
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         };
       },

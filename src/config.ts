@@ -9,6 +9,8 @@ export default registerAs('config', () => {
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       uri: process.env.DATABASE_URI,
+      synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true',
+      logging: process.env.TYPEORM_LOGGING === 'true',
     },
     jwt: {
       secret: process.env.JWT_SECRET,
