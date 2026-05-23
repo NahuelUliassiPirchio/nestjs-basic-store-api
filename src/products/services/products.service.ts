@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -25,6 +26,10 @@ import {
 import { Product } from '../entities/product.entity';
 import { BrandsService } from './brands.service';
 import { CategoriesService } from './categories.service';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+
+const PRODUCT_TTL = 2 * 60 * 1000;
+const productKey = (id: number) => `products:${id}`;
 
 @Injectable()
 export class ProductsService {
@@ -33,6 +38,7 @@ export class ProductsService {
     private productsRepository: Repository<Product>,
     private brandsService: BrandsService,
     private categoriesService: CategoriesService,
+    @Inject(CACHE_MANAGER) private cache: Cache,
   ) {}
 
   async checkProductsExistence(productIds: number[]) {
@@ -106,11 +112,17 @@ export class ProductsService {
   }
 
   async getById(id: number) {
+    const key = productKey(id);
+    const cached = await this.cache.get<Product>(key);
+    if (cached) return cached;
+
     const product = await this.productsRepository.findOne({
       relations: { categories: true, bids: true, brand: true },
       where: { id },
     });
     if (!product) throw new NotFoundException();
+
+    await this.cache.set(key, product, PRODUCT_TTL);
     return product;
   }
 
@@ -141,12 +153,16 @@ export class ProductsService {
       );
 
     this.productsRepository.merge(product, changes);
-    return this.productsRepository.save(product);
+    const saved = await this.productsRepository.save(product);
+    await this.cache.del(productKey(id));
+    return saved;
   }
 
   async deleteProduct(id: number) {
     await this.getById(id);
-    return this.productsRepository.delete(id);
+    const result = await this.productsRepository.delete(id);
+    await this.cache.del(productKey(id));
+    return result;
   }
 
   async addCategoryToProduct(id: number, categoryId: number) {
@@ -154,7 +170,9 @@ export class ProductsService {
     const category = await this.categoriesService.getById(categoryId);
     product.categories.push(category);
 
-    return this.productsRepository.save(product);
+    const saved = await this.productsRepository.save(product);
+    await this.cache.del(productKey(id));
+    return saved;
   }
 
   async deleteCategoryFromProduct(id: number, categoryId: number) {
@@ -164,6 +182,8 @@ export class ProductsService {
       (category) => category.id !== categoryId,
     );
 
-    return this.productsRepository.save(product);
+    const saved = await this.productsRepository.save(product);
+    await this.cache.del(productKey(id));
+    return saved;
   }
 }

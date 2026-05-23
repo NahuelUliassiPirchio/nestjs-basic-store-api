@@ -16,5 +16,8 @@ export default registerAs('config', () => {
       secret: process.env.JWT_SECRET,
       expiresIn: process.env.JWT_EXPIRES_IN_TIME,
     },
+    redis: {
+      url: process.env.REDIS_URL,
+    },
   };
 });
