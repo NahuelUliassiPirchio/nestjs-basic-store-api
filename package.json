@@ -29,6 +29,7 @@
       "migration:generates": "npx typeorm-ts-node-commonjs migration:generate ./src/database/migrations/init -d ./src/database/dataSource.ts"
    },
    "dependencies": {
+      "@keyv/redis": "^5.1.6",
       "@nestjs/cache-manager": "^3.1.2",
       "@nestjs/common": "^11.1.19",
       "@nestjs/config": "^4.0.4",
